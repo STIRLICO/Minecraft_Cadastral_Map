@@ -21,13 +21,14 @@ public class Cadastral_Object {
     private String status; //Статус (продаётся, купленно, стройка, заброшено, бронь, готово)
 
     private String picture; //Картинка
+    private String cell_color; //Цвет клетки
 
     public Cadastral_Object() {
     }
 
     public Cadastral_Object(int id, int price, String currency,
                             String owner, List<String> sellers,
-                            String purchase_date, String status, String picture) {
+                            String purchase_date, String status, String picture,String cell_color) {
 
         this.id = id;
         this.price = price;
@@ -37,6 +38,7 @@ public class Cadastral_Object {
         this.purchase_date = purchase_date;
         this.status = status;
         this.picture = picture;
+        this.cell_color = cell_color;
     }
 
     public int getId() {
@@ -103,17 +105,26 @@ public class Cadastral_Object {
         this.picture = picture;
     }
 
+
+    public String getCell_color() {
+        return cell_color;
+    }
+
+    public void setCell_color(String cell_color) {
+        this.cell_color = cell_color;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cadastral_Object that = (Cadastral_Object) o;
-        return id == that.id && price == that.price && Objects.equals(currency, that.currency) && Objects.equals(owner, that.owner) && Objects.equals(sellers, that.sellers) && Objects.equals(purchase_date, that.purchase_date) && Objects.equals(status, that.status) && Objects.equals(picture, that.picture);
+        return id == that.id && price == that.price && Objects.equals(currency, that.currency) && Objects.equals(owner, that.owner) && Objects.equals(sellers, that.sellers) && Objects.equals(purchase_date, that.purchase_date) && Objects.equals(status, that.status) && Objects.equals(picture, that.picture) && Objects.equals(cell_color, that.cell_color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, price, currency, owner, sellers, purchase_date, status, picture);
+        return Objects.hash(id, price, currency, owner, sellers, purchase_date, status, picture, cell_color);
     }
 
     void addSeller(String seller){
@@ -147,7 +158,7 @@ public class Cadastral_Object {
         sellers.add("Спавн");
 
         for (int i = 1; i < 101; ++i) {
-            Cadastral_Object temp = new Cadastral_Object(i, 0, "Валюта", "Спавн", sellers, "01.01.0001", "продаётся", "Картинка"
+            Cadastral_Object temp = new Cadastral_Object(i, 0, "Валюта", "Спавн", sellers, "01.01.0001", "Продаётся", "Картинка","#eee"
             );
             generatedMap.add(temp);
         }
