@@ -26,17 +26,13 @@ public class CadastralController {
         }
     }
 
-    private String getStatusClass(String status) {
-        if (status == null) return "cell-default";
-
-        switch(status.toLowerCase()) {
-            case "купленно": return "cell-sold";
-            case "бронь": return "cell-reserved";
-            case "стройка": return "cell-construction";
-            case "продаётся": return "cell-available";
-            default: return "cell-default";
+    private Response checkAuth(@CookieParam("authToken") String authToken) {
+        if (authToken == null || !LoginService.isValidToken(authToken)) {
+            return Response.seeOther(URI.create("/login")).build();
         }
+        return null;
     }
+
     @GET
     @Path("/map/")
     @Produces(MediaType.TEXT_HTML + "; charset=UTF-8")
@@ -45,21 +41,50 @@ public class CadastralController {
         html.append("<!DOCTYPE html>");
         html.append("<html><head><title>Cadastral Map</title>");
         html.append("<style>");
-        html.append(".grid { display: grid; grid-template-columns: repeat(10, 50px); gap: 0px; }");
-        html.append(".cell { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; }");
-        html.append(".cell:hover { opacity: 0.8; }");
-        html.append(".cell { transition: all 0.2s ease; }");
-        html.append(".cell:hover { transform: scale(1.05); box-shadow: 0 0 5px rgba(0,0,0,0.2)");
+        html.append(".grid-container {");
+        html.append("  display: inline-block;");
+        html.append("  position: relative;");
+        html.append("  background-image: url('./resources/map.webp');");
+        html.append("  background-size: contain;");
+        html.append("  background-position: center;");
+        html.append("  background-repeat: no-repeat;");
+        html.append("  padding: 0px;");
+        html.append("}");
+        html.append(".grid {");
+        html.append("  display: grid;");
+        html.append("  grid-template-columns: repeat(11, 64px);");
+        html.append("  gap: 0px;");
+        html.append("}");
+        html.append(".cell {");
+        html.append("  width: 64px;");
+        html.append("  height: 64px;");
+        html.append("  display: flex;");
+        html.append("  justify-content: center;");
+        html.append("  align-items: center;");
+        html.append("  opacity: 0.8;");
+        html.append("  transition: all 0.2s ease;");
+        html.append("}");
+        html.append(".cell:hover {");
+        html.append("  opacity: 0.9;");
+        html.append("  transform: scale(1.05);");
+        html.append("  box-shadow: 0 0 5px rgba(0,0,0,0.2);");
+        html.append("}");
         html.append("</style></head><body>");
         html.append("<h1>Cadastral Map</h1>");
+        html.append("<div class='grid-container'>");
         html.append("<div class='grid'>");
 
         try {
             map = Cadastral_Object.loadFromJSON();
 
-            for (int i = 1; i <= 100; i++) {
+
+            if (map.size() != 121) {
+                throw new RuntimeException("Ожидается 121 участок, получено: " + map.size());
+            }
+
+            for (int i = 1; i <= 121; i++) {
                 Cadastral_Object obj = map.get(i - 1);
-                String color = obj.getCell_color() != null ? obj.getCell_color() : "#eee";
+                String color = obj.getCell_color() != null ? obj.getCell_color() : "rgba(238, 238, 238, 0.7)";
 
                 html.append("<a href='/map/area/").append(i).append("' class='cell' ")
                         .append("style='background:").append(color).append("'")
@@ -69,7 +94,8 @@ public class CadastralController {
             throw new RuntimeException("Ошибка загрузки данных", e);
         }
 
-        html.append("</div></body></html>");
+        html.append("</div></div>");
+        html.append("</body></html>");
         return html.toString();
     }
 
@@ -98,8 +124,11 @@ public class CadastralController {
     @GET
     @Path("/map/area/{id}/edit")
     @Produces(MediaType.TEXT_HTML + "; charset=UTF-8")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + "; charset=UTF-8")
-    public String editArea(@PathParam("id") int id) {
+    public Response editArea(@PathParam("id") int id, @CookieParam("authToken") String authToken) {
+        Response authResponse = checkAuth(authToken);
+        if (authResponse != null) return authResponse;
+
+
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
         html.append("<html><head><title>Cadastral Map Area "+id+"</title><meta charset=\"UTF-8\"></head>");
@@ -154,7 +183,7 @@ public class CadastralController {
         html.append("<p><a href=\"/map/area/" + id + "\">Назад</a>");
 
         html.append("</body>");
-        return html.toString();
+        return Response.ok(html.toString()).build();
     }
 
     @POST
@@ -163,12 +192,11 @@ public class CadastralController {
     public Response handleEdit(
             @PathParam("id") int id,
             @FormParam("field") String field,
+            @CookieParam("authToken") String authToken,
             @FormParam("value") String value) {
-
-        if (field == null || field.trim().isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Не указано поле для обновления").build();
-        }
+        checkAuth(authToken);
+        Response authResponse = checkAuth(authToken);
+        if (authResponse != null) return authResponse;
 
         if (value == null) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -219,10 +247,8 @@ public class CadastralController {
                             .entity("Неизвестное поле: " + field).build();
             }
 
-            // Сохранение изменений
             Cadastral_Object.saveToJSON(map);
 
-            // Перенаправление обратно на страницу редактирования
             return Response.seeOther(new URI("/map/area/" + id + "/edit")).build();
 
         } catch (URISyntaxException e) {

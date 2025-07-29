@@ -151,19 +151,18 @@ public class Cadastral_Object {
         return objectMapper.readValue(file, new TypeReference<List<Cadastral_Object>>() {});
     }
 
-    static public void generateMap(){
-        List<Cadastral_Object> generatedMap = new ArrayList<>();
+    static public void generateMap() {
+        List<Cadastral_Object> generatedMap = new ArrayList<>(121);
         List<String> sellers = new ArrayList<>();
-
         sellers.add("Спавн");
 
-        for (int i = 1; i < 101; ++i) {
-            Cadastral_Object temp = new Cadastral_Object(i, 0, "Валюта", "Спавн", sellers, "01.01.0001", "Продаётся", "Картинка","#eee"
+        for (int i = 1; i <= 121; i++) {
+            Cadastral_Object temp = new Cadastral_Object(
+                    i, 0, "Валюта", "Спавн", sellers,
+                    "01.01.0001", "Продаётся", "Картинка", "#eee"
             );
             generatedMap.add(temp);
         }
-
-
-        Cadastral_Object.saveToJSON(generatedMap);;
+        Cadastral_Object.saveToJSON(generatedMap);
     }
 }

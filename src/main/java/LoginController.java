@@ -1,7 +1,9 @@
 
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -37,15 +39,28 @@ public class LoginController {
 
     @POST
     @Produces("text/html")
-    public Response login(@FormParam("username") String username, @FormParam("password") String password) {
+    public Response login(@FormParam("username") String username,
+                          @FormParam("password") String password) {
         try {
             if (loginService.login(username, password)) {
-                return Response.seeOther(new URI("/login/success")).build();
+                String token = loginService.generateToken(username);
+                NewCookie authCookie = new NewCookie(
+                        "authToken",
+                        token,
+                        "/",
+                        null,
+                        null,
+                        NewCookie.DEFAULT_MAX_AGE,
+                        false
+                );
+                return Response.seeOther(new URI("/map/"))
+                        .cookie(authCookie)
+                        .build();
             } else {
                 return Response.seeOther(new URI("/login/failure")).build();
             }
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("Ошибка построения URI для перенаправления");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
