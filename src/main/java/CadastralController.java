@@ -128,7 +128,8 @@ public class CadastralController {
         html.append("<p>Цена: "+ map.get(id - 1).getPrice()+" "+ map.get(id - 1).getCurrency());
         html.append("<p>Статус: "+ map.get(id - 1).getStatus());
         //html.append(Map.get(id - 1).getPicture());
-        html.append("<p><a href=\"/map/area/" + id + "/edit\">Редактировать</a>");
+        html.append("<p><a href=\"/map/area/" + id + "/send_application\">Оставить заявку</a>");
+        html.append("<p><a href=\"/application/area/" + id + "/edit\">Редактировать</a>");
         html.append("</body>");
         return html.toString();
     }

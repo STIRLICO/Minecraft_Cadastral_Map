@@ -8,6 +8,7 @@ public class RestApplication extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(CadastralController.class);
         classes.add(LoginController.class);
+        classes.add(ApplicationController.class);
         classes.add(CharsetFilter.class);
         return classes;
     }
@@ -18,6 +19,7 @@ public class RestApplication extends Application {
         Login_object.saveToJSON(admin);
         Set<Object>  resources = new HashSet<>();
         resources.add(new LoginController());
+        resources.add(new ApplicationController());
         resources.add(new CharsetFilter());
         resources.add(new CharsetRequestFilter());
         resources.add(new CadastralController());
