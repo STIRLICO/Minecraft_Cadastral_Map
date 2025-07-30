@@ -7,6 +7,7 @@ public class RestApplication extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(CadastralController.class);
+        classes.add(LoginController.class);
         classes.add(CharsetFilter.class);
         return classes;
     }

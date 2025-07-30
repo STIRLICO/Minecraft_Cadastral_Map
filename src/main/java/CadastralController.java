@@ -1,8 +1,7 @@
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -33,6 +32,7 @@ public class CadastralController {
         return null;
     }
 
+
     @GET
     @Path("/map/")
     @Produces(MediaType.TEXT_HTML + "; charset=UTF-8")
@@ -44,7 +44,7 @@ public class CadastralController {
         html.append(".grid-container {");
         html.append("  display: inline-block;");
         html.append("  position: relative;");
-        html.append("  background-image: url('./resources/map.webp');");
+        html.append("  background-image: url('');");
         html.append("  background-size: contain;");
         html.append("  background-position: center;");
         html.append("  background-repeat: no-repeat;");
@@ -52,12 +52,12 @@ public class CadastralController {
         html.append("}");
         html.append(".grid {");
         html.append("  display: grid;");
-        html.append("  grid-template-columns: repeat(11, 64px);");
+        html.append("  grid-template-columns: repeat(11, 48px);");
         html.append("  gap: 0px;");
         html.append("}");
         html.append(".cell {");
-        html.append("  width: 64px;");
-        html.append("  height: 64px;");
+        html.append("  width: 48px;");
+        html.append("  height: 48px;");
         html.append("  display: flex;");
         html.append("  justify-content: center;");
         html.append("  align-items: center;");
