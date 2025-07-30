@@ -32,6 +32,16 @@ public class CadastralController {
         return null;
     }
 
+    @GET
+    @Path("/map.jpg")
+    @Produces("image/jpeg")
+    public Response getMapImage() {
+        File file = new File("map.jpg");
+        if (!file.exists()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(file).build();
+    }
 
     @GET
     @Path("/map/")
@@ -44,7 +54,7 @@ public class CadastralController {
         html.append(".grid-container {");
         html.append("  display: inline-block;");
         html.append("  position: relative;");
-        html.append("  background-image: url('');");
+        html.append("  background-image: url('/map.jpg');");
         html.append("  background-size: contain;");
         html.append("  background-position: center;");
         html.append("  background-repeat: no-repeat;");
