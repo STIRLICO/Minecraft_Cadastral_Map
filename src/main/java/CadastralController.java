@@ -33,10 +33,10 @@ public class CadastralController {
     }
 
     @GET
-    @Path("/map.jpg")
-    @Produces("image/jpeg")
+    @Path("/map.webp")
+    @Produces("image/webp")
     public Response getMapImage() {
-        File file = new File("map.jpg");
+        File file = new File("map.webp");
         if (!file.exists()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -52,26 +52,28 @@ public class CadastralController {
         html.append("<html><head><title>Cadastral Map</title>");
         html.append("<style>");
         html.append(".grid-container {");
-        html.append("  display: inline-block;");
         html.append("  position: relative;");
-        html.append("  background-image: url('/map.jpg');");
+        html.append("  background-image: url('/map.webp');");
         html.append("  background-size: contain;");
         html.append("  background-position: center;");
         html.append("  background-repeat: no-repeat;");
-        html.append("  padding: 0px;");
+        html.append("  width: 100%;");
+        html.append("  max-width: 704px;");
+        html.append("  height: 704px;");
+        html.append("  margin: 64px auto;");
         html.append("}");
         html.append(".grid {");
         html.append("  display: grid;");
-        html.append("  grid-template-columns: repeat(11, 48px);");
+        html.append("  grid-template-columns: repeat(11, 64px);");
         html.append("  gap: 0px;");
         html.append("}");
         html.append(".cell {");
-        html.append("  width: 48px;");
-        html.append("  height: 48px;");
+        html.append("  width: 64px;");
+        html.append("  height: 64px;");
         html.append("  display: flex;");
         html.append("  justify-content: center;");
         html.append("  align-items: center;");
-        html.append("  opacity: 0.8;");
+        html.append("  opacity: 0.7;");
         html.append("  transition: all 0.2s ease;");
         html.append("}");
         html.append(".cell:hover {");
