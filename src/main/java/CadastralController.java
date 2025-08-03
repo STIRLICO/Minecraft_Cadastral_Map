@@ -100,7 +100,7 @@ public class CadastralController {
         html.append("  position: relative;");
         html.append("  background-image: url('/map.webp');");
         html.append("  background-size: contain;");
-        html.append("  background-position: 2px 2px;");
+        html.append("  background-position: 0px 0px;");
         html.append("  background-repeat: no-repeat;");
         html.append("  width: 100%;");
         html.append("  max-width: 896px;");
@@ -113,7 +113,7 @@ public class CadastralController {
         html.append("}");
         html.append(".grid {");
         html.append("  display: grid;");
-        html.append("  grid-template-columns: repeat(14, 64px);");
+        html.append("  grid-template-columns: repeat(14 , 64px);");
         html.append("  gap: 0px;");
         html.append("  height: 100%;");
         html.append("}");
@@ -123,7 +123,7 @@ public class CadastralController {
         html.append("  display: flex;");
         html.append("  justify-content: center;");
         html.append("  align-items: center;");
-        html.append("  opacity: 0.7;");
+        html.append("  opacity: 0.6;");//добавить ползунок
         html.append("  transition: all 0.2s ease;");
         html.append("  border-radius: 0px;");
         html.append("  position: relative;");
@@ -277,6 +277,14 @@ public class CadastralController {
         html.append(".btn-edit:hover {");
         html.append("    background-color: #e67e22;");
         html.append("}");
+        html.append(".property-image {");
+        html.append("    width: 100%;");
+        html.append("    max-height: 1000px;");
+        html.append("    object-fit: cover;");
+        html.append("    border-radius: 8px;");
+        html.append("    margin-bottom: 20px;");
+        html.append("    box-shadow: 0 2px 5px rgba(0,0,0,0.1);");
+        html.append("}");
         html.append("form {");
         html.append("    display: inline-block;");
         html.append("    margin-left: 10px;");
@@ -319,6 +327,11 @@ public class CadastralController {
         html.append("<div class='property-title'>Статус</div>");
         html.append("<div class='property-value'>" + map.get(id - 1).getStatus() + "</div>");
         html.append("</div>");
+        if (!map.get(id-1).getPicture().equals("Картинка") && !map.get(id-1).getPicture().equals("-")) {
+            html.append("<div class='property'>");
+            html.append("<img src='" + map.get(id-1).getPicture() + "' alt='Изображение участка " + id + "' class='property-image'>");
+            html.append("</div>");
+        }
 
         html.append("<div class='property'>");
         html.append("<a href='/map/area/" + id + "/send_application' class='btn btn-apply'>Оставить заявку</a>");
