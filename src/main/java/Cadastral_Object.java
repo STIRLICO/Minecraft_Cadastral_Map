@@ -152,11 +152,11 @@ public class Cadastral_Object {
     }
 
     static public void generateMap() {
-        List<Cadastral_Object> generatedMap = new ArrayList<>(121);
+        List<Cadastral_Object> generatedMap = new ArrayList<>(196);
         List<String> sellers = new ArrayList<>();
         sellers.add("Спавн");
 
-        for (int i = 1; i <= 121; i++) {
+        for (int i = 1; i <= 196; i++) {
             Cadastral_Object temp = new Cadastral_Object(
                     i, 0, "Валюта", "Спавн", sellers,
                     "01.01.0001", "Продаётся", "Картинка", "#eee"

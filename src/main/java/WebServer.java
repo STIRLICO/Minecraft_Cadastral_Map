@@ -2,9 +2,14 @@ import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.util.Headers;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class WebServer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TelegramApiException {
+
+
         UndertowJaxrsServer server = new UndertowJaxrsServer()
                 .start(Undertow.builder()
                         .addHttpListener(8081, "0.0.0.0")
@@ -24,5 +29,7 @@ public class WebServer {
 
         server.deploy(RestApplication.class);
         System.out.println("Сервер запущен: http://localhost:8081/");
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        botsApi.registerBot(new TelegramIntegration());
     }
 }

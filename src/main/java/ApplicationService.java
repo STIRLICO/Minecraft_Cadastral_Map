@@ -17,6 +17,7 @@ public class ApplicationService {
     
     private boolean published;
     private String text;
+    private String type;// Покупка, Продажа, Жалоба, Предложение, Другое
 
 
     public static int getAll_id() {
@@ -67,25 +68,34 @@ public class ApplicationService {
         this.text = text;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ApplicationService that = (ApplicationService) o;
-        return id == that.id && area_id == that.area_id && published == that.published && Objects.equals(applicant, that.applicant) && Objects.equals(text, that.text);
+        return id == that.id && area_id == that.area_id && published == that.published && Objects.equals(applicant, that.applicant) && Objects.equals(text, that.text) && Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, area_id, applicant, published, text);
+        return Objects.hash(id, area_id, applicant, published, text, type);
     }
 
-    public ApplicationService(int area_id, String applicant, String text) {
+    public ApplicationService(int area_id, String applicant, String text,String type) {
         this.id = all_id;
         this.area_id = area_id;
         this.applicant = applicant;
         this.published = false;
         this.text = text;
+        this.type = type;
         ApplicationService.setAll_id(all_id+1);
     }
 
@@ -110,13 +120,11 @@ public class ApplicationService {
             return Collections.emptyList();
         }
 
-        // Читаем как JsonNode
         JsonNode root = objectMapper.readTree(file);
-        // Восстанавливаем all_id
         if (root.has("lastId")) {
             all_id = root.get("lastId").asInt();
         }
-        // Получаем список приложений
+
         JsonNode appsNode = root.get("applications");
         if (appsNode != null && appsNode.isArray()) {
             return objectMapper.readValue(appsNode.traverse(),

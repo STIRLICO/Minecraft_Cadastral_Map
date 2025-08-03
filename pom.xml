@@ -66,7 +66,11 @@
             <artifactId>h2</artifactId>
             <version>2.1.214</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>6.0.1</version>
+        </dependency>
     </dependencies>
 
 
