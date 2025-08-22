@@ -8,6 +8,9 @@ public class ServerSettings {
     private String ip;
     private int port;
 
+    private String fileName;
+    private String key;
+
     public String getIp() {
         return ip;
     }
@@ -24,17 +27,33 @@ public class ServerSettings {
         this.port = port;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServerSettings that = (ServerSettings) o;
-        return Objects.equals(ip, that.ip) && Objects.equals(port, that.port);
+        return port == that.port && Objects.equals(ip, that.ip) && Objects.equals(fileName, that.fileName) && Objects.equals(key, that.key);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ip, port);
+        return Objects.hash(ip, port, fileName, key);
     }
 
     static public void saveToJSON(ServerSettings object) {

@@ -31,8 +31,9 @@ public class LoginController {
                 "      display: flex;" +
                 "      justify-content: center;" +
                 "      align-items: center;" +
-                "      height: 100vh;" +
+                "      min-height: 100vh;" +
                 "      margin: 0;" +
+                "      padding: 20px;" +
                 "    }" +
                 "    .login-container {" +
                 "      background: white;" +
@@ -46,6 +47,7 @@ public class LoginController {
                 "      color: #2c3e50;" +
                 "      text-align: center;" +
                 "      margin-bottom: 1.5rem;" +
+                "      font-size: 1.5rem;" +
                 "    }" +
                 "    .form-group {" +
                 "      margin-bottom: 1.5rem;" +
@@ -86,6 +88,17 @@ public class LoginController {
                 "      text-align: center;" +
                 "      margin-top: 1.5rem;" +
                 "      color: #95a5a6;" +
+                "    }" +
+                "    @media (max-width: 480px) {" +
+                "      .login-container {" +
+                "        padding: 1.5rem;" +
+                "      }" +
+                "      h1 {" +
+                "        font-size: 1.3rem;" +
+                "      }" +
+                "      input, button {" +
+                "        padding: 0.9rem;" +
+                "      }" +
                 "    }" +
                 "  </style>" +
                 "</head>" +

@@ -29,10 +29,11 @@ public class ApplicationController {
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
         html.append("<html><head><title>Cadastral Map Area " + id + "</title><meta charset=\"UTF-8\">");
+        html.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
 
         html.append("<style>");
         html.append("body {");
-        html.append("    font-family:  sans-serif;");
+        html.append("    font-family: sans-serif;");
         html.append("    background-color: #f8f9fa;");
         html.append("    margin: 0;");
         html.append("    padding: 20px;");
@@ -54,26 +55,57 @@ public class ApplicationController {
         html.append("    text-decoration: none;");
         html.append("    border-radius: 5px;");
         html.append("    transition: background-color 0.3s;");
+        html.append("    margin-bottom: 20px;");
         html.append("}");
         html.append("form { display: flex; flex-direction: column; gap: 15px; }");
-        html.append("input, select, textarea { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }");
+        html.append("input, select, textarea { ");
+        html.append("    padding: 12px;");
+        html.append("    border: 1px solid #ddd;");
+        html.append("    border-radius: 4px;");
+        html.append("    font-size: 16px;"); // Предотвращает увеличение в iOS
+        html.append("    box-sizing: border-box;");
+        html.append("    width: 100%;");
+        html.append("}");
         html.append("textarea { height: 150px; resize: vertical; }");
-        html.append("button { padding: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }");
+        html.append("button { ");
+        html.append("    padding: 12px;");
+        html.append("    background: #4CAF50;");
+        html.append("    color: white;");
+        html.append("    border: none;");
+        html.append("    border-radius: 4px;");
+        html.append("    cursor: pointer;");
+        html.append("    font-size: 16px;");
+        html.append("}");
         html.append("button:hover { background: #45a049; }");
+        html.append("label { font-weight: bold; margin-bottom: 5px; display: block; }");
+        html.append("@media (max-width: 768px) {");
+        html.append("    .container { padding: 15px; }");
+        html.append("    body { padding: 10px; }");
+        html.append("}");
+        html.append("@media (max-width: 480px) {");
+        html.append("    .back-button {");
+        html.append("        display: block;");
+        html.append("        text-align: center;");
+        html.append("        margin-bottom: 15px;");
+        html.append("    }");
+        html.append("    input, select, textarea, button {");
+        html.append("        padding: 14px;");
+        html.append("    }");
+        html.append("}");
         html.append("</style>");
 
         html.append("</head><body>");
-        html.append("<p><a class='back-button'; href=\"/map/" + "\">Назад</a>");
-        html.append("<div class ='container'>");
+        html.append("<a class='back-button' href=\"/map/\">Назад</a>");
+        html.append("<div class='container'>");
         html.append("<h1>Заявка для участка " + id + "</h1>");
 
         html.append("<form method=\"post\" action=\"/map/area/" + id + "/send_application/\">");
 
-        html.append("<label for=\"applicant\"><b>Ваш никнейм</b></label>");
-        html.append("<input type=\"text\" placeholder=\"Введите ваш никнейм\" name=\"applicant\" required>");
+        html.append("<label for=\"applicant\">Ваш никнейм</label>");
+        html.append("<input type=\"text\" placeholder=\"Введите ваш никнейм\" name=\"applicant\" id=\"applicant\" required>");
 
-        html.append("<label for=\"request_type\"><b>Тип заявки</b></label>");
-        html.append("<select name=\"request_type\" required>");
+        html.append("<label for=\"request_type\">Тип заявки</label>");
+        html.append("<select name=\"request_type\" id=\"request_type\" required>");
         html.append("<option value=\"\" disabled selected>Выберите тип заявки</option>");
         html.append("<option value=\"Покупка\">Покупка</option>");
         html.append("<option value=\"Продажа\">Продажа</option>");
@@ -82,10 +114,8 @@ public class ApplicationController {
         html.append("<option value=\"Другое\">Другое</option>");
         html.append("</select>");
 
-
-        html.append("<label for=\"text\"><b>Текст заявки</b></label>");
-        html.append("<textarea placeholder=\"Напишите вашу заявку...\" name=\"text\" required></textarea>");
-
+        html.append("<label for=\"text\">Текст заявки</label>");
+        html.append("<textarea placeholder=\"Напишите вашу заявку...\" name=\"text\" id=\"text\" required></textarea>");
 
         html.append("<button type=\"submit\">Отправить</button>");
         html.append("</form>");
@@ -140,8 +170,6 @@ public class ApplicationController {
     @Path("/map/send_application_success")
     @Produces(MediaType.TEXT_HTML + "; charset=UTF-8")
     public String send_application_success() {
-
-
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
         html.append("<html lang='ru'>");
@@ -154,11 +182,11 @@ public class ApplicationController {
         html.append("    font-family: 'Arial', sans-serif;");
         html.append("    background-color: #f5f5f5;");
         html.append("    margin: 0;");
-        html.append("    padding: 0;");
+        html.append("    padding: 20px;");
         html.append("    display: flex;");
         html.append("    justify-content: center;");
         html.append("    align-items: center;");
-        html.append("    height: 100vh;");
+        html.append("    min-height: 100vh;");
         html.append("    text-align: center;");
         html.append("}");
         html.append(".success-container {");
@@ -167,7 +195,7 @@ public class ApplicationController {
         html.append("    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);");
         html.append("    padding: 30px;");
         html.append("    max-width: 500px;");
-        html.append("    width: 90%;");
+        html.append("    width: 100%;");
         html.append("}");
         html.append(".success-icon {");
         html.append("    color: #4CAF50;");
@@ -186,15 +214,29 @@ public class ApplicationController {
         html.append("}");
         html.append(".back-button {");
         html.append("    display: inline-block;");
-        html.append("    padding: 10px 20px;");
+        html.append("    padding: 12px 24px;");
         html.append("    background-color: #4CAF50;");
         html.append("    color: white;");
         html.append("    text-decoration: none;");
         html.append("    border-radius: 5px;");
         html.append("    transition: background-color 0.3s;");
+        html.append("    font-size: 16px;");
         html.append("}");
         html.append(".back-button:hover {");
         html.append("    background-color: #45a049;");
+        html.append("}");
+        html.append("@media (max-width: 480px) {");
+        html.append("    .success-container {");
+        html.append("        padding: 20px;");
+        html.append("        margin: 10px;");
+        html.append("    }");
+        html.append("    .success-title {");
+        html.append("        font-size: 20px;");
+        html.append("    }");
+        html.append("    .back-button {");
+        html.append("        display: block;");
+        html.append("        padding: 14px;");
+        html.append("    }");
         html.append("}");
         html.append("</style>");
         html.append("</head>");
@@ -217,18 +259,21 @@ public class ApplicationController {
     public Response applicationsPage() {
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
-        html.append("<html><head><title>Cadastral Map Area</title><meta charset=\"UTF-8\">");
+        html.append("<html><head><title>Заявки игроков</title><meta charset=\"UTF-8\">");
+        html.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
         html.append("<style>");
         html.append("body {");
         html.append("    font-family: 'Arial', sans-serif;");
         html.append("    background-color: #f5f5f5;");
+        html.append("    margin: 0;");
+        html.append("    padding: 20px;");
         html.append("}");
         html.append(".application-block {");
         html.append("    border: 1px solid #ddd;");
         html.append("    padding: 15px;");
         html.append("    margin: 10px 0;");
-        html.append("   border-radius: 5px;");
-        html.append("   }");
+        html.append("    border-radius: 5px;");
+        html.append("}");
         html.append(".back-button {");
         html.append("    display: inline-block;");
         html.append("    padding: 10px 20px;");
@@ -237,26 +282,46 @@ public class ApplicationController {
         html.append("    text-decoration: none;");
         html.append("    border-radius: 5px;");
         html.append("    transition: background-color 0.3s;");
+        html.append("    margin-bottom: 20px;");
         html.append("}");
         html.append(".back-button:hover {");
-        html.append("    background-color: #4CA049;");
+        html.append("    background-color: #45a049;");
         html.append("}");
-
-
         html.append(".type-buy { background-color: #b3ffbf; }");
         html.append(".type-sell { background-color: #ffd88a; }");
         html.append(".type-complaint  { background-color: #ffdee3; }");
         html.append(".type-suggestion { background-color: #b3daff; }");
         html.append(".type-default { background-color: #f9f9f9; }");
-
+        html.append("@media (max-width: 768px) {");
+        html.append("    body { padding: 15px; }");
+        html.append("    .application-block {");
+        html.append("        padding: 12px;");
+        html.append("        margin: 8px 0;");
+        html.append("    }");
+        html.append("}");
+        html.append("@media (max-width: 480px) {");
+        html.append("    body { padding: 10px; }");
+        html.append("    .back-button {");
+        html.append("        display: block;");
+        html.append("        text-align: center;");
+        html.append("        margin-bottom: 15px;");
+        html.append("    }");
+        html.append("    .application-block {");
+        html.append("        padding: 10px;");
+        html.append("        margin: 6px 0;");
+        html.append("        font-size: 14px;");
+        html.append("    }");
+        html.append("}");
         html.append("</style>");
         html.append("</head><body>");
-        html.append("<p><a class='back-button'; href=\"/map/" + "\">Назад</a>");
+        html.append("<a class='back-button' href=\"/map/\">Назад к карте</a>");
+
         try {
             applications = ApplicationService.loadFromJSON();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         for(ApplicationService application : applications) {
             if(application.isPublished()) {
                 String typeClass = "type-default";
@@ -271,7 +336,7 @@ public class ApplicationController {
                 }
 
                 html.append("<div class=\"application-block " + typeClass + "\">");
-                html.append("<p>Заявка №"+application.getId()+" Тип: "+application.getType()+"</p>");
+                html.append("<p><strong>Заявка №"+application.getId()+"</strong> Тип: "+application.getType()+"</p>");
                 html.append("<p>Участок №"+application.getArea_id()+"</p>");
                 html.append("<p>Ник игрока: "+application.getApplicant()+"</p>");
                 html.append("<p>"+application.getText()+"</p>");

@@ -186,7 +186,7 @@ public class TelegramIntegration extends TelegramLongPollingBot {
     public void sendNotification(){
         SendMessage sm = SendMessage.builder()
                 .chatId(real.getTelegram_id().toString())
-                .text("❗Новая заявка❗").build();
+                .text("❗Новая заявка❗ /update").build();
         try {
             execute(sm);
         } catch (TelegramApiException e) {
