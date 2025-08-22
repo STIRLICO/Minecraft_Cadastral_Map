@@ -15,6 +15,7 @@ import java.util.List;
 public class TelegramIntegration extends TelegramLongPollingBot {
     private Login_object real;
 
+    private String expectedInput = "";
 
     {
         try {
@@ -101,33 +102,112 @@ public class TelegramIntegration extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // Обработка команды /update
+
         if (update.hasMessage() && update.getMessage().hasText() &&
-                update.getMessage().getText().equals("/update") &&
                 update.getMessage().getFrom().getId().equals(real.getTelegram_id())) {
 
-            List<ApplicationService> applications;
-            try {
-                applications = ApplicationService.loadFromJSON();
-            } catch (IOException e) {
-                sendText(real.getTelegram_id(), "❌ Ошибка загрузки заявок: " + e.getMessage());
-                return;
+            String messageText = update.getMessage().getText();
+            long userId = update.getMessage().getFrom().getId();
+            long chatId = update.getMessage().getChatId();
+
+            if (messageText.equals("/update")) {
+                List<ApplicationService> applications;
+                try {
+                    applications = ApplicationService.loadFromJSON();
+                } catch (IOException e) {
+                    sendText(chatId, "❌ Ошибка загрузки заявок: " + e.getMessage());
+                    return;
+                }
+
+                for (ApplicationService application : applications) {
+                    if (!application.isPublished()) {
+                        sendApplicationWithButtons(application);
+                    }
+                }
             }
 
-            for (ApplicationService application : applications) {
-                if (!application.isPublished()) {
-                    sendApplicationWithButtons(application);
-                }
+            else if (messageText.startsWith("/addcolor")) {
+                handleAddColorCommand(messageText, chatId);
+            }
+
+            else if (expectedInput.equals("nickname")) {
+                handleNicknameInput(messageText, chatId);
+            }
+
+            else if (expectedInput.equals("color")) {
+                handleColorInput(messageText, chatId);
             }
         }
 
-        // Обработка нажатий на Inline-кнопки
+
         else if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         }
     }
 
-    // Отправка заявки с кнопками "Принять" и "Отклонить"
+    private void handleAddColorCommand(String messageText, long chatId) {
+        String[] parts = messageText.split(" ", 3);
+
+        if (parts.length == 3) {
+            // Формат: /addcolor ник цвет
+            String nickname = parts[1];
+            String color = parts[2];
+
+            try {
+                addColorRecord(nickname, color);
+                sendText(chatId, "✅ Запись добавлена: " + nickname + " - " + color);
+            } catch (IOException e) {
+                sendText(chatId, "❌ Ошибка при добавлении записи: " + e.getMessage());
+            }
+        } else if (parts.length == 1) {
+            // Формат: /addcolor (без параметров)
+            expectedInput = "nickname";
+            sendText(chatId, "Введите никнейм владельца:");
+        } else {
+            sendText(chatId, "❌ Неправильный формат команды. Используйте: /addcolor никнейм цвет");
+        }
+    }
+
+    private void handleNicknameInput(String nickname, long chatId) {
+        expectedInput = "color";
+        tempNickname = nickname;
+        sendText(chatId, "Теперь введите цвет для " + nickname + " (в формате HEX, например #FF0000):");
+    }
+
+    private void handleColorInput(String color, long chatId) {
+        try {
+            addColorRecord(tempNickname, color);
+            sendText(chatId, "✅ Запись добавлена: " + tempNickname + " - " + color);
+
+
+            expectedInput = "";
+            tempNickname = "";
+        } catch (IOException e) {
+            sendText(chatId, "❌ Ошибка при добавлении записи: " + e.getMessage());
+        }
+    }
+
+    private String tempNickname = "";
+
+    private void addColorRecord(String nickname, String color) throws IOException {
+        List<Color_Object> colors = Color_Object.loadFromJSON();
+
+        boolean found = false;
+        for (Color_Object colorObj : colors) {
+            if (colorObj.getName().equals(nickname)) {
+                colorObj.setColor(color);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            colors.add(new Color_Object(nickname, color));
+        }
+
+        Color_Object.saveToJSON(colors);
+    }
+
     private void sendApplicationWithButtons(ApplicationService application) {
         String text = String.format(
                 "📄 *Заявка #%d*\n\n" +
@@ -172,9 +252,10 @@ public class TelegramIntegration extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
-    public void sendText(Long id, String text){
+
+    public void sendText(Long chatId, String text){
         SendMessage sm = SendMessage.builder()
-                .chatId(id.toString())
+                .chatId(chatId.toString())
                 .text(text).build();
         try {
             execute(sm);
